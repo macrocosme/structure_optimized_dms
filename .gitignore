@@ -11,3 +11,4 @@
 drift_rate.ipynb
 *.pdf
 *.pyc
+*.pickle
