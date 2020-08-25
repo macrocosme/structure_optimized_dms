@@ -15,7 +15,7 @@ source env/bin/activate
 # Install required packages
 pip3 install -r requirements.txt
 
-# Make script executable
+# Start notebook
 jupyter notebook
 
 # Deactivate when done working on this project to return to global settings
