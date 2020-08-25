@@ -1,14 +1,9 @@
-
 .DS_Store
-.DS_Store
-.ipynb_checkpoints/drift_rate-checkpoint.ipynb
-.ipynb_checkpoints/Interactive structure-optimized DM analysis-checkpoint.ipynb
-.ipynb_checkpoints/Interactive_structure-optimized_DM_analysis-checkpoint.ipynb
+.ipynb_checkpoints/*
 *.png
 *.npy
 *.csv
 *.zip
-drift_rate.ipynb
 *.pdf
 *.pyc
 *.pickle
