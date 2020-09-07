@@ -18,6 +18,8 @@ import scipy.ndimage.filters as filters
 
 import builtins
 
+import copy
+
 """
  Note:
     Backend() currently is only used with default inputs,
@@ -149,8 +151,6 @@ def select_frequency_range(spectra,
     builtins.struct_opt_dm = spectra.dm + delta_dm + dm
     builtins.struct_opt_dm_err = dm_std
 
-    print (f_channels[-1])
-
     waterfall = dedisperse_waterfall(waterfall,
                                      delta_dm + dm,
                                      f_channels,
@@ -235,16 +235,18 @@ def prep_data(file, estimated_dm, downsampling, around_peak=True, verbose=False)
                               f_channels = f_channels)
 
     spectra.data = RFIm().dm0clean(spectra.data)
-    spectra.dedisperse(dm=estimated_dm)
-    spectra.downsample(factor=downsampling)
-#     spectra.subband(spectra.data.shape[0]//4)
     spectra.data = correct_bandpass(spectra.data)
     spectra.data = RFIm().tdsc_amber(spectra.data)
-#     spectra.data = RFIm().fdsc_amber(spectra.data)
+    # spectra.data = RFIm().fdsc_amber(spectra.data)
+
+    spectra.dedisperse(dm=estimated_dm)
+    # spectra.downsample(factor=downsampling)
+    # spectra.subband(spectra.data.shape[0]//4)
 
     spectra.data = crop(spectra,
                         # t_zoom=0.05 if downsampling < 25 else 0.1 if downsampling > 1 else 0.015,
-                        0.5,
+                        0.1,
+                        # 0.5,
                         around_peak = around_peak)
 
     spectra.data = to_snr(spectra.data)
