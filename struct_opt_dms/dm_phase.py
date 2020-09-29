@@ -76,9 +76,7 @@ def poly_max(x, y, Err):
 
     return float(np.real(Best)), delta_x, p , Fac
 
-def fit_power(dm_trials, f_channels, nchan, d_power_vs_dm, fluct_id_low, fluct_id_high):
-    dm_curve = d_power_vs_dm[fluct_id_low : fluct_id_high].sum(axis=0)
-
+def fit_power(dm_trials, dm_curve, f_channels, nchan, fluct_id_low, fluct_id_high):
     fact_idx = fluct_id_low - fluct_id_high
     _max   = dm_curve.max()
     _nchan = len(f_channels)
@@ -96,4 +94,4 @@ def fit_power(dm_trials, f_channels, nchan, d_power_vs_dm, fluct_id_low, fluct_i
     x = dm_trials[_range]
     returns_poly = poly_max(x, y, d_std)
 
-    return returns_poly, dm_trials, dm_curve, _range, snr, x, y
+    return returns_poly, _range, snr, x, y

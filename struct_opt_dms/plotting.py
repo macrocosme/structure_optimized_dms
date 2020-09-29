@@ -10,6 +10,7 @@ and provide interaction in a jupyter notebook.
 
 import numpy as np
 from .dm_phase import fit_power
+from .processing import fit_coherent_power
 import builtins
 
 def get_yticks(freq_id_low, freq_id_high):
@@ -55,52 +56,71 @@ def plot_coherent_power(power_vs_dm,
                         fluct_id_high,
                         ax_power,
                         ax_power_prof,
-                        ax_power_res,
+                        # ax_power_res,
+                        fitting_method='dm_phase',
+                        descriptor='',
                         cmap='viridis'):
     """Plot coherent power: fluctuation freq. vs DM"""
 
-    returns_poly, dm_trials, dm_curve, _range, snr, x, y = fit_power(dm_trials,
-                                                                     f_channels,
-                                                                     nchan,
-                                                                     d_power_vs_dm,
-                                                                     fluct_id_low,
-                                                                     fluct_id_high)
-
-    # Profile
+    dm_curve = d_power_vs_dm[fluct_id_low : fluct_id_high].sum(axis=0)
     X, Y = dm_trials, dm_curve
-    ax_power_prof.plot(X, Y, linewidth=3, clip_on=False)
-    ax_power_prof.plot(X[_range],
-                       np.polyval(returns_poly[2], X[_range]),
-                       color='orange',
-                       linewidth=3,
-                       zorder=2,
-                       clip_on=False)
-    ax_power_prof.set_xlim([X.min(), X.max()])
-    ax_power_prof.set_ylim([Y.min(), Y.max()])
-    ax_power_prof.ticklabel_format(useOffset=False)
 
-    ax_power_prof.text(0.1, 0.8,
-                       'S/N=%.2f' % (snr),
-                       horizontalalignment='center',
-                       verticalalignment='center',
-                       transform=ax_power_prof.transAxes)
+    if fitting_method == 'dm_phase':
+        returns_poly, _range, snr, x, y = fit_power(dm_trials,
+                                                    dm_curve,
+                                                    f_channels,
+                                                    nchan,
+                                                    fluct_id_low,
+                                                    fluct_id_high)
 
-    # Residuals
-    res = y - np.polyval(returns_poly[2], x)
-    res -= res.min()
-    res /= res.max()
+        # Profile
+        ax_power_prof.plot(X, Y, linewidth=3, clip_on=False)
+        ax_power_prof.plot(X[_range],
+                           np.polyval(returns_poly[2], X[_range]),
+                           color='orange',
+                           linewidth=3,
+                           zorder=2,
+                           clip_on=False)
+        ax_power_prof.set_xlim([X.min(), X.max()])
+        ax_power_prof.set_ylim([Y.min(), Y.max()])
+        ax_power_prof.ticklabel_format(useOffset=False)
 
-    ax_power_res.plot(x, res, 'x', linewidth=2, clip_on=False)
-    ax_power_res.set_ylim([np.min(res) - np.std(res) / 2,
-                           np.max(res) + np.std(res) / 2])
-    ax_power_res.set_ylabel('$\Delta$')
-    ax_power_res.tick_params(axis='both',
-                             labelbottom='off',
-                             labelleft='off',
-                             direction='in',
-                             left='off',
-                             top='on')
-    ax_power_res.ticklabel_format(useOffset=False)
+        ax_power_prof.text(0.1, 0.8,
+                           'S/N=%.2f' % (snr),
+                           horizontalalignment='center',
+                           verticalalignment='center',
+                           transform=ax_power_prof.transAxes)
+
+        # Residuals
+        # res = y - np.polyval(returns_poly[2], x)
+        # res -= res.min()
+        # res /= res.max()
+        #
+        # ax_power_res.plot(x, res, 'x', linewidth=2, clip_on=False)
+        # ax_power_res.set_ylim([np.min(res) - np.std(res) / 2,
+        #                        np.max(res) + np.std(res) / 2])
+        # ax_power_res.set_ylabel('$\Delta$')
+        # ax_power_res.tick_params(axis='both',
+        #                          labelbottom='off',
+        #                          labelleft='off',
+        #                          direction='in',
+        #                          left='off',
+        #                          top='on')
+        # ax_power_res.ticklabel_format(useOffset=False)
+
+        dm, dm_std = returns_poly[0], returns_poly[1]
+    else:
+        dm, dm_std, snr, fit = fit_coherent_power(X, Y)
+
+        ax_power_prof.plot(X, Y, linewidth=3, clip_on=False)
+        ax_power_prof.plot(X, fit.best_fit, color='orange', zorder=2, clip_on=False)
+
+        ax_power_prof.text(0.1, 0.8,
+                           descriptor,
+                           horizontalalignment='center',
+                           verticalalignment='center',
+                           transform=ax_power_prof.transAxes)
+
 
     # Power vs DM map
     FT_len = power_vs_dm.shape[0]
@@ -124,8 +144,7 @@ def plot_coherent_power(power_vs_dm,
                          right='on',
                          top='on')
 
-    dm = returns_poly[0]
-    dm_std = returns_poly[1]
+
 
     return dm, dm_std, snr
 
@@ -138,7 +157,7 @@ def plot_waterfall(waterfall,
                    ax_waterfall,
                    ax_t_snr,
                    ax_power_prof,
-                   ax_power_res,
+                   # ax_power_res,
                    dm,
                    dt,
                    delta_dm,
@@ -188,5 +207,5 @@ def plot_waterfall(waterfall,
                   transform=ax_t_snr.transAxes)
 
     ax_power_prof.axis('off')
-    ax_power_res.axis('off')
+    # ax_power_res.axis('off')
     ax_t_snr.axis('off')

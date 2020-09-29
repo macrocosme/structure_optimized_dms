@@ -58,10 +58,10 @@ def set_layout(fig, gs):
     ax_power_prof = fig.add_subplot(gs[0:4, 0:3])
     ax_power_prof.clear()
 
-    ax_power_res = fig.add_subplot(gs[4:5, 0:3])
-    ax_power_res.clear()
+    # ax_power_res = fig.add_subplot(gs[4:5, 0:3])
+    # ax_power_res.clear()
 
-    ax_power = fig.add_subplot(gs[5:, 0:3])
+    ax_power = fig.add_subplot(gs[4:, 0:3])
     ax_power.clear()
     ax_power.set_xlabel(r'DM (pc/cm$^3$)')
     ax_power.set_ylabel(r'Fluctuation frequency (ms$^{-1}$)')
@@ -71,7 +71,7 @@ def set_layout(fig, gs):
     ax_t_snr = fig.add_subplot(gs[0:4, 3:])
     ax_t_snr.clear()
 
-    ax_waterfall = fig.add_subplot(gs[5:, 3:])
+    ax_waterfall = fig.add_subplot(gs[4:, 3:])
     ax_waterfall.clear()
     ax_waterfall.set_xlabel('Time (ms)')
     ax_waterfall.set_ylabel('Frequency (MHz)')
@@ -85,7 +85,7 @@ def set_layout(fig, gs):
 #     ax_acf.set_xlabel('Time (ms)')
 #     ax_acf.set_ylabel('Frequency (MHz)')
 
-    return ax_t_snr, ax_waterfall, ax_power_prof, ax_power, ax_power_res
+    return ax_t_snr, ax_waterfall, ax_power_prof, ax_power#, ax_power_res
 
 def select_frequency_range(spectra,
                            dm_trials,
@@ -93,6 +93,8 @@ def select_frequency_range(spectra,
                            gs,
                            power_vs_dm,
                            d_power_vs_dm,
+                           descriptor,
+                           fitting_method = 'dm_phase',
                            fluct_id_low = 0,
                            fluct_id_high = 30,
                            freq_id_low = 0,
@@ -117,7 +119,7 @@ def select_frequency_range(spectra,
     builtins.smooth = smooth
 
     # Prep figure layout
-    ax_t_snr, ax_waterfall, ax_power_prof, ax_power, ax_power_res = set_layout(fig, gs)
+    ax_t_snr, ax_waterfall, ax_power_prof, ax_power = set_layout(fig, gs)
 
     # Initialize observation data
     waterfall, f_channels, freq_id_high, t1 = initialize_observation(spectra,
@@ -140,7 +142,9 @@ def select_frequency_range(spectra,
                                           fluct_id_high,
                                           ax_power,
                                           ax_power_prof,
-                                          ax_power_res)
+                                          # ax_power_res,
+                                          descriptor=descriptor,
+                                          fitting_method = fitting_method)
 
     ax_power.vlines(dm + delta_dm + spectra.dm,
                     ax_power.get_ylim()[0],
@@ -175,7 +179,7 @@ def select_frequency_range(spectra,
                    ax_waterfall,
                    ax_t_snr,
                    ax_power_prof,
-                   ax_power_res,
+                   # ax_power_res,
                    spectra.dm,
                    spectra.dt,
                    delta_dm + dm,
@@ -212,8 +216,8 @@ def prep_power(spectra,
                                  spectra.dt)
         )[:nbin]
 
-    v = np.arange(0, nbin)
-    d_power_vs_dm = power_vs_dm * v[:, np.newaxis]**2
+    omega = np.arange(0, nbin)
+    d_power_vs_dm = omega[:, np.newaxis]**2 * power_vs_dm
 
     return power_vs_dm, d_power_vs_dm
 
@@ -244,8 +248,8 @@ def prep_data(file, estimated_dm, downsampling, around_peak=True, verbose=False)
     # spectra.subband(spectra.data.shape[0]//4)
 
     spectra.data = crop(spectra,
-                        # t_zoom=0.05 if downsampling < 25 else 0.1 if downsampling > 1 else 0.015,
-                        0.1,
+                        t_zoom=0.05 if downsampling < 25 else 0.1 if downsampling > 1 else 0.015,
+                        # 0.1,
                         # 0.5,
                         around_peak = around_peak)
 

@@ -13,7 +13,7 @@ rc('axes', labelsize=18)
 class Pulse():
     def __init__(self,
                  backend : Backend = Backend(),
-                 width : int = 10,
+                 width : int = 10, # second
                 ):
         """Initialise Pulse class.
 

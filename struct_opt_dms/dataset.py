@@ -96,6 +96,11 @@ def load_dataframe(input_filterbanks_repository, state_variable_name, reload=Fal
         period = 16.28
         df_R3['detection_phase'] = df_R3['detection_mjd'].apply(lambda x: ((x - t0.mjd) % period) / period)
 
+        df_R3 = df_R3.sort_values('detection_mjd', ascending=True)
+
+        for i, row in df_R3.iterrows():
+            df_R3.at[i, 'paper_name'] = "A" + str(i+1).zfill(2)
+
         save(state_variable_name, df_R3)
         df_R3.to_csv('arts_r3.csv', index=False)
     return df_R3

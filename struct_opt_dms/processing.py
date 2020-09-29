@@ -2,6 +2,7 @@ import numpy as np
 from blimpy import Waterfall
 from .extern.psrpy.spectra import Spectra
 from .extern.time_domain_astronomy_sandbox.backend import Backend
+import lmfit
 
 """
  Note:
@@ -86,3 +87,25 @@ def subband(data, sub_factor, dim='freq'):
         data.reshape(nfreq, sub_factor, -1, order='f'),
         axis=1
     )
+
+def fit_coherent_power(x, y):
+    """Fit Gaussian + Offset
+
+    (Modified code from Leon Oostrum (Oostrum+2020))
+
+    Returns:
+        dm = result.params['center'].value
+        dm_std = result.params['hwhm'].value
+    """
+    peak = lmfit.models.GaussianModel()
+    offset = lmfit.models.ConstantModel()
+
+    model = peak + offset
+
+    params = offset.make_params(c = np.median(y))
+    params += peak.guess(y, x=x, amplitude = np.max(y) - np.median(y))
+    params['hwhm'] = lmfit.Parameter('hwhm', expr='fwhm/2')
+
+    fit = model.fit(y, params, x=x)
+
+    return fit.params['center'].value, fit.params['hwhm'].value, fit.params['amplitude'].value, fit
