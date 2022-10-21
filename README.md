@@ -1,3 +1,5 @@
+This code is a modified version of [DM_phase](https://github.com/danielemichilli/DM_phase). 
+
 ```shell
 # Get code
 git clone https://github.com/macrocosme/structure_optimized_dms.git
