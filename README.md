@@ -2,10 +2,7 @@
 
 This code allows to run [DM_phase](https://github.com/danielemichilli/DM_phase) interactively in a notebook. 
 
-### Note
-
-I restructured the DM_phase code, made it Python3 compliant, and thinned it out. The package also include plenty of other functions. Parts of the fitting code comes from Leon Oostrum. I indicated where appropriate who did what. I do not know where all the code in `extern/psrpy` comes from. I think some is taken from [Preso](https://github.com/scottransom/presto). If you recognise this code, please contact me so I can acknowledge appropriately. 
-
+# Example setup
 
 ```shell
 # Get code
@@ -30,3 +27,7 @@ jupyter notebook
 # Deactivate when done working on this project to return to global settings
 deactivate
 ```
+
+### Note
+
+I restructured the DM_phase code, made it Python3 compliant, and thinned it out. The package also include plenty of other functions. Parts of the fitting code comes from Leon Oostrum. I indicated where appropriate who did what. Code in `extern/psrpy` is a slightly modified version of files from [Preso](https://github.com/scottransom/presto). 
