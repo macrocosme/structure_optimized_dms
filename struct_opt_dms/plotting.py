@@ -10,7 +10,7 @@ and provide interaction in a jupyter notebook.
 
 import numpy as np
 from .dm_phase import fit_power
-from .processing import fit_coherent_power
+from .processing import fit_coherent_power, compute_statistics, psnr
 import builtins
 
 def get_yticks(freq_id_low, freq_id_high):
@@ -63,6 +63,7 @@ def plot_coherent_power(power_vs_dm,
     """Plot coherent power: fluctuation freq. vs DM"""
 
     dm_curve = d_power_vs_dm[fluct_id_low : fluct_id_high].sum(axis=0)
+    # dm_curve = power_vs_dm[fluct_id_low : fluct_id_high].sum(axis=0)
     X, Y = dm_trials, dm_curve
 
     if fitting_method == 'dm_phase':
@@ -116,7 +117,7 @@ def plot_coherent_power(power_vs_dm,
         ax_power_prof.plot(X, fit.best_fit, color='orange', zorder=2, clip_on=False)
 
         ax_power_prof.text(0.1, 0.8,
-                           descriptor,
+                           "%s   snr=%.2f" % (descriptor, psnr(Y)),
                            horizontalalignment='center',
                            verticalalignment='center',
                            transform=ax_power_prof.transAxes)

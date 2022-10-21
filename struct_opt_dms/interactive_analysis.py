@@ -248,8 +248,8 @@ def prep_data(file, estimated_dm, downsampling, around_peak=True, verbose=False)
     # spectra.subband(spectra.data.shape[0]//4)
 
     spectra.data = crop(spectra,
-                        t_zoom=0.05 if downsampling < 25 else 0.1 if downsampling > 1 else 0.015,
-                        # 0.1,
+                        # t_zoom=0.05 if downsampling < 25 else 0.1 if downsampling > 1 else 0.015,
+                        0.1,
                         # 0.5,
                         around_peak = around_peak)
 

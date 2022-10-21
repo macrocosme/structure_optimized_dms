@@ -66,12 +66,43 @@ def crop(spectra:Spectra,
 
     return spectra.data[:, start:start+n_samp]
 
-def to_snr(spectra:Spectra, axis=1):
-    data = spectra.data
+def to_snr(data, axis=1):
+    # data = spectra.data
     data = data - np.nanmean(data, axis=axis)[:, None]
     data = data / np.sqrt(np.nanvar(data, axis=axis))[:, None]
     data[~np.isfinite(data)] = np.nanmedian(data)
     return data
+
+def psnr(data):
+    return (np.nanmax(data) - np.nanmean(data)) / np.sqrt(np.nanvar(data))
+
+def fwhm(profile, return_dist=False):
+    points = np.where(profile > np.max(profile)/2.0)[0]
+    if return_dist:
+        if points.shape[0] > 0:
+            return np.max(points)-np.min(points)
+        else:
+            return 0
+    else:
+        try:
+            return np.min(points), np.max(points)
+        except ValueError:
+            print ('ValueError', 'profile', profile, 'points', points)
+            return np.min(points), np.max(points)
+
+def compute_statistics(profile, stat='median'):
+    a,b = fwhm(profile)
+    width = b-a
+    start = a-width
+    end = b+width
+    noisy = np.append(profile[0:start], profile[end:], axis=0)
+
+    central = np.nanmean(noisy) if stat == 'mean' else np.nanmedian(noisy)
+    stdev = np.nanstd(noisy)
+
+    snr = (np.nanmax(profile)-central)/stdev if stdev != 0 else -1
+
+    return central, stdev, snr
 
 def acf(x):
     l = 2 ** int(np.log2(x.shape[1] * 2 - 1))
@@ -94,8 +125,13 @@ def fit_coherent_power(x, y):
     (Modified code from Leon Oostrum (Oostrum+2020))
 
     Returns:
-        dm = result.params['center'].value
-        dm_std = result.params['hwhm'].value
+        center: int
+            Peak center position
+        hwhm: float
+            Half width at half maximum
+        amplitude: float
+            Peak amplitude
+        fit: lmfit.models.fit
     """
     peak = lmfit.models.GaussianModel()
     offset = lmfit.models.ConstantModel()
