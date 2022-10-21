@@ -30,7 +30,7 @@ deactivate
 
 ### Note
 
-I restructured the DM_phase code, made it Python3 compliant, and thinned it out. The package also include plenty of other functions. Parts of the fitting code comes from Leon Oostrum. I indicated where appropriate who did what. Code in `extern/psrpy` is a slightly modified version of files from [Preso](https://github.com/scottransom/presto). Code in `extern/time_domain_astronomy_sandbox` is taken from [time_domain_astronomy_sandbox](https://github.com/macrocosme/time_domain_astronomy_sandbox). 
+I restructured the DM_phase code, made it Python3 compliant, and thinned it out. The package also include plenty of other functions. Parts of the fitting code comes from [Leon Oostrum](https://github.com/loostrum). I indicated where appropriate who did what. Code in `extern/psrpy` is a slightly modified version of files from [Preso](https://github.com/scottransom/presto). Code in `extern/time_domain_astronomy_sandbox` is taken from [time_domain_astronomy_sandbox](https://github.com/macrocosme/time_domain_astronomy_sandbox). 
 
 ### Note
 
