@@ -1,4 +1,11 @@
-This code is a modified version of [DM_phase](https://github.com/danielemichilli/DM_phase). 
+# Structure optimized DMs
+
+This code includes allows to run [DM_phase](https://github.com/danielemichilli/DM_phase) interactively in a notebook. 
+
+### Note
+
+I restructured the DM_phase code, made it Python3 compliant, and thinned it out. The package also include plenty of other functions. Parts of the fitting code comes from Leon Oostrum. I indicated where appropriate who did what. I do not know where all the code in `extern/psrpy` comes from. I think some is taken from [Preso](https://github.com/scottransom/presto). If you recognise this code, please contact me so I can acknowledge appropriately. 
+
 
 ```shell
 # Get code
