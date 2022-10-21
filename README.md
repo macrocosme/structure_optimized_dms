@@ -1,6 +1,6 @@
 # Structure optimized DMs
 
-This code includes allows to run [DM_phase](https://github.com/danielemichilli/DM_phase) interactively in a notebook. 
+This code allows to run [DM_phase](https://github.com/danielemichilli/DM_phase) interactively in a notebook. 
 
 ### Note
 
