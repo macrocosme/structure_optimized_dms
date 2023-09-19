@@ -12,7 +12,7 @@ cd structure_optimized_dms
 # (Install virtualenv if necessary)
 pip3 install virtualenv
 
-# Create a virtual environment coined `topology-env` for the project
+# Create a virtual environment coined `struct-dm-env` for the project
 virtualenv env
 
 # Activate the environment
